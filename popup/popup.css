@@ -61,6 +61,9 @@ body{
     width: 16px;
     height: 16px;
 }
+.site-trash:hover{
+    cursor: pointer;
+}
 
 
 .bottom{
@@ -90,4 +93,7 @@ body{
 .arrow-right{
     width: 16px;
     height: 16px;
+}
+.arrow-right:hover{
+    cursor: pointer;
 }

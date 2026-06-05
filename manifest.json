@@ -11,5 +11,5 @@
         "service_worker": "./background/background.js",
         "type": "module"
     },
-    "permissions": ["declarativeNetRequest"]
+    "permissions": ["declarativeNetRequest","storage"]
 }

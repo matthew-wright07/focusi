@@ -1,32 +1,68 @@
-const urls = ["youtube.com","bing.com"]
+
+async function getSites(){
+    const result = await chrome.storage.local.get(["sites"])
+    const urls = result.sites
+    return urls
+}
+
+let urls = await getSites()
+console.log(urls)
 
 const top = document.querySelector(".top")
 
-urls.map(current=>{
+function update(urls){
+    top.innerHTML = ""
 
-    const site = document.createElement("div")
-    site.className = "site"
+    urls.map((current,index)=>{
 
-    const site_details = document.createElement("div")
-    site_details.className = "site-details"
-    site.appendChild(site_details)
+        const site = document.createElement("div")
+        site.className = "site"
 
-    const logo = document.createElement("img")
-    logo.src = `https://www.google.com/s2/favicons?domain=${current}&sz=64`
-    logo.className = "site-logo"
-    site_details.appendChild(logo)
+        const site_details = document.createElement("div")
+        site_details.className = "site-details"
+        site.appendChild(site_details)
 
-    const paragraph = document.createElement("p")
-    paragraph.innerHTML = current
-    site_details.appendChild(paragraph)
+        const logo = document.createElement("img")
+        logo.src = `https://www.google.com/s2/favicons?domain=${current}&sz=64`
+        logo.className = "site-logo"
+        site_details.appendChild(logo)
 
-    const trash = document.createElement("img")
-    trash.src="../images/trash.svg"
-    trash.className = "site-trash"
-    site.appendChild(trash)
+        const paragraph = document.createElement("p")
+        paragraph.innerHTML = current
+        site_details.appendChild(paragraph)
+
+        const trash = document.createElement("img")
+        trash.src="../images/trash.svg"
+        trash.className = "site-trash"
+        trash.addEventListener("click",async ()=>{
+            urls.splice(index,1)
+            await setSites(urls)
+            urls = await getSites()
+            update(urls)
+        })
+        site.appendChild(trash)
 
 
-    top.appendChild(site)
+        top.appendChild(site)
+    })
+
+}
+
+update(urls)
+
+
+async function addSite(newSite){
+    await chrome.storage.local.set({sites:[...urls,newSite]})
+}
+async function setSites(urls){
+    await chrome.storage.local.set({sites:urls})
+}
+
+const addButton = document.querySelector(".arrow-right")
+const input = document.querySelector(".add-input")
+
+addButton.addEventListener("click",async ()=>{
+    await addSite(input.value)
+    urls = await getSites()
+    update(urls)
 })
-
-console.log(urls)
