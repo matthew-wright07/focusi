@@ -1,8 +1,7 @@
 
 async function getSites(){
     const result = await chrome.storage.local.get(["sites"])
-    const urls = result.sites
-    return urls
+    return result.sites || [];
 }
 
 let urls = await getSites()
@@ -35,10 +34,12 @@ function update(urls){
         trash.src="../images/trash.svg"
         trash.className = "site-trash"
         trash.addEventListener("click",async ()=>{
+            console.log("Cliked")
             urls.splice(index,1)
             await setSites(urls)
             urls = await getSites()
             update(urls)
+            console.log(urls)
         })
         site.appendChild(trash)
 
@@ -63,6 +64,17 @@ const input = document.querySelector(".add-input")
 
 addButton.addEventListener("click",async ()=>{
     await addSite(input.value)
+    input.value = ""
     urls = await getSites()
     update(urls)
+})
+
+input.addEventListener("keydown",async (event)=>{
+    if (event.key==="Enter"){
+        event.preventDefault()
+        await addSite(input.value)
+        input.value = ""
+        urls = await getSites()
+        update(urls)
+    }
 })
